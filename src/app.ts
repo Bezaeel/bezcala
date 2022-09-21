@@ -3,24 +3,18 @@ import fs from "fs";
 import os from "os";
 
 
-
-console.log("ask Talabi..");
-let count = 0;
-
-
 function Calculate() {
   // read from .env
-  let x = getEnvValue();
-
-  if(x === undefined) {
+  let value = getEnvValue();
+  if(value === undefined) {
     process.exit(-1);
   }
   
   // calc value
-  let peccalaValue = new BigNumber(x!);
-  let y = (peccalaValue.times(2).plus(1.5)).dividedBy(7.5).toPrecision(18);
-  Log(x, y);
-  setEnvValue(y);
+  let peccalaValue = new BigNumber(value!);
+  let newValue = (peccalaValue.times(2).plus(1.5)).dividedBy(7.5).toPrecision(18);
+  Log(value, newValue);
+  setEnvValue(newValue);
 }
 
 // write to log file
@@ -43,14 +37,12 @@ function setEnvValue(value: string) {
 function getEnvValue() {
   const envVariables = fs.readFileSync("./.env", "utf8").split(os.EOL);
   let x = envVariables.find((x) => x.match(new RegExp("peccalaValue")));
-  let y = x?.split('=')[1];
-  console.log("y::::", y);
-  return y;
+  let valueFromENV = x?.split('=')[1];
+  return valueFromENV;
 }
 
 
 // code to run every 2 mins
 setInterval(() => {
-  console.log(count++);
   Calculate();
 }, (2000 * 60));
